@@ -958,6 +958,12 @@ const Footer = ({ darkMode }) => {
   );
 };
 
+const FloatingCall = () => (
+  <a href="tel:+919939117874" aria-label="Call Golu Pandey" className="fixed bottom-24 right-6 z-[90] flex h-14 w-14 items-center justify-center rounded-full bg-blue-500 text-white shadow-xl shadow-blue-500/30 transition-all duration-300 hover:scale-110 hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300">
+    <svg className="h-7 w-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.7 15.7 0 006.6 6.6l2.2-2.2a1.5 1.5 0 011.5-.36c1.05.35 2.18.54 3.34.54a1.5 1.5 0 011.5 1.5v3.5a1.5 1.5 0 01-1.5 1.5C11.82 21.88 2.12 12.18 2.12 2.5A1.5 1.5 0 013.62 1h3.5a1.5 1.5 0 011.5 1.5c0 1.16.19 2.29.54 3.34a1.5 1.5 0 01-.36 1.5l-2.2 2.2z"/></svg>
+  </a>
+);
+
 const FloatingWhatsApp = () => {
   const message = encodeURIComponent('Hello Golu, I connected through your resume.');
   return (
@@ -1049,6 +1055,7 @@ function App() {
       <CTASection darkMode={darkMode}/>
       <Blog darkMode={darkMode}/>
       <Footer darkMode={darkMode}/>
+      <FloatingCall />
       <FloatingWhatsApp />
       <ResumeModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} darkMode={darkMode} showToast={showToast}/>
       {toast && <Toast key={toast.key} type={toast.type} message={toast.message} onClose={hideToast}/>}
