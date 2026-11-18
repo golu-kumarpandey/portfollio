@@ -492,7 +492,7 @@ const Navbar = ({ darkMode, setDarkMode, activeSection, onNavClick }) => {
   }, [mobileOpen]);
 
   return (
-    <nav className={`sticky top-0 z-50 ${darkMode ? 'bg-gray-900 text-white' : 'bg-[#1e2139] text-white'} transition-colors duration-300`}>
+    <nav className={`fixed inset-x-0 top-0 z-50 ${darkMode ? 'bg-gray-900 text-white' : 'bg-[#1e2139] text-white'} transition-colors duration-300`}>
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
         <div className="flex items-center justify-between h-14 sm:h-16">
           <div className="flex items-center gap-2 flex-shrink-0">
@@ -985,7 +985,7 @@ function App() {
   const hideToast = () => setToast(null);
 
   return (
-    <div className={`min-h-screen overflow-x-hidden ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-colors duration-300`}>
+    <div className={`min-h-screen overflow-x-hidden pt-14 sm:pt-16 ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-colors duration-300`}>
       <ScrollProgress />
       <Navbar darkMode={darkMode} setDarkMode={setDarkMode} activeSection={active} onNavClick={scrollTo}/>
       <Hero darkMode={darkMode} onOpenResume={openResume}/>
