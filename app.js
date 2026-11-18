@@ -985,7 +985,7 @@ function App() {
   const hideToast = () => setToast(null);
 
   return (
-    <div className={`min-h-screen ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-colors duration-300`}>
+    <div className={`min-h-screen overflow-x-hidden ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-colors duration-300`}>
       <ScrollProgress />
       <Navbar darkMode={darkMode} setDarkMode={setDarkMode} activeSection={active} onNavClick={scrollTo}/>
       <Hero darkMode={darkMode} onOpenResume={openResume}/>
