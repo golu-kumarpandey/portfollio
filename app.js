@@ -346,7 +346,7 @@ const ResumeModal = ({ isOpen, onClose, darkMode, showToast }) => {
             </div>
             <div className="min-w-0">
               <h3 className="text-base sm:text-lg font-bold truncate">Resume Preview</h3>
-              <p className={`text-[10px] sm:text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'} truncate`}>Golu_Pandey_Resume.pdf</p>
+              <p className={`text-[10px] sm:text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'} truncate`}>{RESUME_FILE}</p>
             </div>
           </div>
           <button onClick={onClose} className={`p-2 rounded-full ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`} aria-label="Close modal">
@@ -355,7 +355,8 @@ const ResumeModal = ({ isOpen, onClose, darkMode, showToast }) => {
         </div>
 
         <div className={`flex-1 overflow-y-auto min-h-0 ${darkMode ? 'bg-gray-900' : 'bg-gray-100'} p-3 sm:p-6`}>
-          <div className="bg-white text-gray-900 rounded-lg shadow-xl max-w-3xl mx-auto p-6 sm:p-10 text-[11px] sm:text-sm leading-relaxed">
+          <iframe src={RESUME_FILE} title="Uploaded Golu Pandey resume" className="w-full min-h-[65vh] rounded-lg bg-white shadow-xl" />
+          <div className="hidden bg-white text-gray-900 rounded-lg shadow-xl max-w-3xl mx-auto p-6 sm:p-10 text-[11px] sm:text-sm leading-relaxed">
             <div className="border-b-2 border-orange-500 pb-4 mb-5">
               <h1 className="text-xl sm:text-3xl font-bold text-[#1e2139]">GOLU PANDEY</h1>
               <p className="text-orange-500 text-xs sm:text-sm mt-1">Frontend Developer  |  React.js & TypeScript</p>
@@ -957,6 +958,15 @@ const Footer = ({ darkMode }) => {
   );
 };
 
+const FloatingWhatsApp = () => {
+  const message = encodeURIComponent('Hello Golu, I connected through your resume.');
+  return (
+    <a href={`https://wa.me/918809658299?text=${message}`} target="_blank" rel="noreferrer" aria-label="Connect with Golu on WhatsApp" className="fixed bottom-6 right-6 z-[90] flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-white shadow-xl shadow-green-500/30 transition-all duration-300 hover:scale-110 hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-300">
+      <svg className="h-7 w-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3.5A11.8 11.8 0 0012.1 0C5.6 0 .3 5.3.3 11.8c0 2.1.6 4.1 1.6 5.9L.2 24l6.5-1.7a11.8 11.8 0 005.4 1.3h.1c6.5 0 11.8-5.3 11.8-11.8 0-3.1-1.2-6.1-3.5-8.3zM12.2 21.6h-.1a9.8 9.8 0 01-5-1.4l-.4-.2-3.8 1 1-3.7-.2-.4a9.8 9.8 0 01-1.5-5.2C2.2 6.3 6.7 1.9 12.1 1.9c2.6 0 5.1 1 6.9 2.9a9.7 9.7 0 012.9 6.9c0 5.5-4.4 9.9-9.7 9.9zm5.4-7.4c-.3-.2-1.7-.8-2-1-.3-.1-.5-.2-.7.2-.2.3-.7 1-.8 1.2-.2.2-.3.2-.6.1-1.6-.8-2.7-1.5-3.8-3.4-.3-.5.3-.5.8-1.7.1-.3.1-.5 0-.7-.1-.2-.7-1.6-1-2.2-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.6s1.1 3 1.2 3.2c.2.2 2.2 3.4 5.4 4.8.8.4 1.4.6 1.9.7.8.3 1.5.2 2 .1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.1-1.4-.2-.2-.4-.2-.7-.3z"/></svg>
+    </a>
+  );
+};
+
 // ============ APP (Scroll-aware navigation) ============
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -1039,6 +1049,7 @@ function App() {
       <CTASection darkMode={darkMode}/>
       <Blog darkMode={darkMode}/>
       <Footer darkMode={darkMode}/>
+      <FloatingWhatsApp />
       <ResumeModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} darkMode={darkMode} showToast={showToast}/>
       {toast && <Toast key={toast.key} type={toast.type} message={toast.message} onClose={hideToast}/>}
     </div>
