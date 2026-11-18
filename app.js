@@ -1,6 +1,7 @@
 const { useState, useEffect, useRef } = React;
 
 const GITHUB_URL = 'https://github.com/golu-kumarpandey';
+const RESUME_FILE = 'golu_aaply_resume.pdf';
 
 // ============ SCROLL REVEAL HOOK ============
 const useScrollReveal = (direction = 'left', delay = 0) => {
@@ -324,12 +325,15 @@ const ResumeModal = ({ isOpen, onClose, darkMode, showToast }) => {
 
   const handleDownload = async () => {
     setDownloading(true);
-    await new Promise((r) => setTimeout(r, 300));
-    await generateResumePDF((type, message) => {
-      showToast(type, message);
-      setDownloading(false);
-      if (type === 'success') setTimeout(onClose, 2000);
-    });
+    const link = document.createElement('a');
+    link.href = RESUME_FILE;
+    link.download = RESUME_FILE;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    showToast('success', 'Resume download started successfully!');
+    setDownloading(false);
+    setTimeout(onClose, 800);
   };
 
   return (
@@ -818,21 +822,48 @@ const Testimonials = ({ darkMode }) => {
 };
 
 const CTASection = ({ darkMode }) => {
-  const [email, setEmail] = useState('');
+  const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const [sending, setSending] = useState(false);
   const r = useScrollReveal('up');
+  const updateField = (field) => (event) => setForm(previous => ({ ...previous, [field]: event.target.value }));
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setSending(true);
+    try {
+      const response = await fetch('https://formsubmit.co/ajax/golu.g.pandey@outlook.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ ...form, _subject: 'New portfolio contact message', _captcha: 'false' }),
+      });
+      if (!response.ok) throw new Error('Unable to send message');
+      setForm({ name: '', email: '', message: '' });
+      window.dispatchEvent(new CustomEvent('portfolio-toast', { detail: { type: 'success', message: 'Message sent successfully!' } }));
+    } catch (error) {
+      const subject = encodeURIComponent(`Portfolio contact from ${form.name}`);
+      const body = encodeURIComponent(`${form.message}\n\nReply to: ${form.email}`);
+      window.location.href = `mailto:golu.g.pandey@outlook.com?subject=${subject}&body=${body}`;
+      window.dispatchEvent(new CustomEvent('portfolio-toast', { detail: { type: 'success', message: 'Your email app is ready to send the message.' } }));
+    } finally {
+      setSending(false);
+    }
+  };
   return (
-    <section className={`${darkMode ? 'bg-gray-800' : 'bg-white'} py-12 sm:py-16 lg:py-24 transition-colors duration-300`}>
+    <section id="contact" className={`${darkMode ? 'bg-gray-800' : 'bg-white'} scroll-mt-16 py-12 sm:py-16 lg:py-24 transition-colors duration-300`}>
       <div ref={r.ref} style={r.style} className={`${r.className} max-w-4xl mx-auto px-3 sm:px-4 lg:px-8 text-center`}>
         <h2 className={`text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold ${darkMode ? 'text-white' : 'text-[#1e2139]'} mb-6 sm:mb-8`}>Have an Awesome Project<br/>Idea? <span className="text-orange-500">Let's Discuss</span></h2>
+        <form onSubmit={handleSubmit} className="max-w-xl mx-auto text-left space-y-4">
+          <input required type="text" value={form.name} onChange={updateField('name')} placeholder="Your Name" className={`w-full rounded-xl px-4 py-3 text-sm outline-none ring-1 focus:ring-2 focus:ring-orange-500 ${darkMode ? 'bg-gray-700 text-white placeholder-gray-400 ring-gray-600' : 'bg-gray-100 text-gray-700 placeholder-gray-400 ring-gray-200'}`}/>
+          <textarea required rows="4" value={form.message} onChange={updateField('message')} placeholder="Tell me about your project..." className={`w-full rounded-xl px-4 py-3 text-sm outline-none resize-y ring-1 focus:ring-2 focus:ring-orange-500 ${darkMode ? 'bg-gray-700 text-white placeholder-gray-400 ring-gray-600' : 'bg-gray-100 text-gray-700 placeholder-gray-400 ring-gray-200'}`}/>
         <div className="max-w-xl mx-auto mb-6 sm:mb-8">
           <div className={`flex items-center ${darkMode ? 'bg-gray-700' : 'bg-gray-100'} rounded-full p-1.5 sm:p-2 shadow-lg`}>
             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-orange-500 rounded-full flex items-center justify-center ml-1 sm:ml-2 flex-shrink-0">
               <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
             </div>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter Email Address" className={`flex-1 bg-transparent px-3 sm:px-4 py-2 text-xs sm:text-sm ${darkMode ? 'text-white placeholder-gray-400' : 'text-gray-700 placeholder-gray-400'} outline-none min-w-0`}/>
-            <button className="bg-orange-500 text-white px-4 sm:px-6 py-1.5 sm:py-2 rounded-full font-medium hover:bg-orange-600 flex-shrink-0 text-xs sm:text-sm">Send</button>
+            <input required type="email" value={form.email} onChange={updateField('email')} placeholder="Enter Email Address" className={`flex-1 bg-transparent px-3 sm:px-4 py-2 text-xs sm:text-sm ${darkMode ? 'text-white placeholder-gray-400' : 'text-gray-700 placeholder-gray-400'} outline-none min-w-0`}/>
+            <button type="submit" disabled={sending} className="bg-orange-500 text-white px-4 sm:px-6 py-1.5 sm:py-2 rounded-full font-medium hover:bg-orange-600 flex-shrink-0 text-xs sm:text-sm disabled:opacity-60">{sending ? 'Sending...' : 'Send'}</button>
           </div>
         </div>
+        </form>
       </div>
     </section>
   );
@@ -875,7 +906,7 @@ const Blog = ({ darkMode }) => {
 
 const Footer = ({ darkMode }) => {
   return (
-    <footer id="contact" className={`${darkMode ? 'bg-gray-900' : 'bg-[#1e2139]'} scroll-mt-16 text-white py-12 sm:py-16 lg:py-24 transition-colors duration-300`}>
+    <footer className={`${darkMode ? 'bg-gray-900' : 'bg-[#1e2139]'} text-white py-12 sm:py-16 lg:py-24 transition-colors duration-300`}>
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
         <div className="mb-8 sm:mb-12">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold">Lets Connect there</h2>
@@ -903,6 +934,7 @@ const Footer = ({ darkMode }) => {
               <li>+91 9939117874</li>
               <li className="break-all">golu.g.pandey@outlook.com</li>
               <li>Aurangabad, Bihar</li>
+              <li><a href="https://wa.me/918809658299" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 hover:text-green-400"><svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3.5A11.8 11.8 0 0012.1 0C5.6 0 .3 5.3.3 11.8c0 2.1.6 4.1 1.6 5.9L.2 24l6.5-1.7a11.8 11.8 0 005.4 1.3h.1c6.5 0 11.8-5.3 11.8-11.8 0-3.1-1.2-6.1-3.5-8.3zM12.2 21.6h-.1a9.8 9.8 0 01-5-1.4l-.4-.2-3.8 1 1-3.7-.2-.4a9.8 9.8 0 01-1.5-5.2C2.2 6.3 6.7 1.9 12.1 1.9c2.6 0 5.1 1 6.9 2.9a9.7 9.7 0 012.9 6.9c0 5.5-4.4 9.9-9.7 9.9zm5.4-7.4c-.3-.2-1.7-.8-2-1-.3-.1-.5-.2-.7.2-.2.3-.7 1-.8 1.2-.2.2-.3.2-.6.1-1.6-.8-2.7-1.5-3.8-3.4-.3-.5.3-.5.8-1.7.1-.3.1-.5 0-.7-.1-.2-.7-1.6-1-2.2-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.6s1.1 3 1.2 3.2c.2.2 2.2 3.4 5.4 4.8.8.4 1.4.6 1.9.7.8.3 1.5.2 2 .1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.1-1.4-.2-.2-.4-.2-.7-.3z"/></svg>WhatsApp: +91 8809658299</a></li>
             </ul>
           </div>
           <div>
@@ -912,7 +944,8 @@ const Footer = ({ darkMode }) => {
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd"/></svg>
                 GitHub
               </a></li>
-              <li><a href="https://linkedin.com/in/golu-pandey" target="_blank" rel="noreferrer" className="hover:text-orange-500">LinkedIn</a></li>
+              <li><a href="https://linkedin.com/in/golu-pandey" target="_blank" rel="noreferrer" className="hover:text-orange-500 inline-flex items-center gap-2"><svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5A2.5 2.5 0 112 3.5a2.5 2.5 0 012.98 0zM2.5 8.5h5V22h-5V8.5zM10.5 8.5h4.8v1.85h.07c.67-1.27 2.3-2.6 4.73-2.6 5.06 0 5.99 3.33 5.99 7.66V22h-5v-5.84c0-1.39-.03-3.18-1.94-3.18-1.95 0-2.25 1.52-2.25 3.08V22h-5V8.5z"/></svg>LinkedIn</a></li>
+              <li><a href="https://wa.me/918809658299" target="_blank" rel="noreferrer" className="hover:text-green-400 inline-flex items-center gap-2"><svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3.5A11.8 11.8 0 0012.1 0C5.6 0 .3 5.3.3 11.8c0 2.1.6 4.1 1.6 5.9L.2 24l6.5-1.7a11.8 11.8 0 005.4 1.3h.1c6.5 0 11.8-5.3 11.8-11.8 0-3.1-1.2-6.1-3.5-8.3zM12.2 21.6h-.1a9.8 9.8 0 01-5-1.4l-.4-.2-3.8 1 1-3.7-.2-.4a9.8 9.8 0 01-1.5-5.2C2.2 6.3 6.7 1.9 12.1 1.9c2.6 0 5.1 1 6.9 2.9a9.7 9.7 0 012.9 6.9c0 5.5-4.4 9.9-9.7 9.9zm5.4-7.4c-.3-.2-1.7-.8-2-1-.3-.1-.5-.2-.7.2-.2.3-.7 1-.8 1.2-.2.2-.3.2-.6.1-1.6-.8-2.7-1.5-3.8-3.4-.3-.5.3-.5.8-1.7.1-.3.1-.5 0-.7-.1-.2-.7-1.6-1-2.2-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.6s1.1 3 1.2 3.2c.2.2 2.2 3.4 5.4 4.8.8.4 1.4.6 1.9.7.8.3 1.5.2 2 .1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.1-1.4-.2-.2-.4-.2-.7-.3z"/></svg>WhatsApp</a></li>
             </ul>
           </div>
         </div>
@@ -964,6 +997,15 @@ function App() {
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', updateActiveSection);
     };
+  }, []);
+
+  useEffect(() => {
+    const handlePortfolioToast = (event) => {
+      const { type, message } = event.detail || {};
+      if (message) setToast({ type: type || 'success', message, key: Date.now() });
+    };
+    window.addEventListener('portfolio-toast', handlePortfolioToast);
+    return () => window.removeEventListener('portfolio-toast', handlePortfolioToast);
   }, []);
 
   const openResume = () => setResumeOpen(true);
