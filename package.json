@@ -1,0 +1,4 @@
+{
+  "private": true,
+  "scripts": { "start:chat": "node api/server.js" }
+}
