@@ -125,7 +125,7 @@ async function handler(request, response) {
           Authorization: `Bearer ${process.env.AIROUTER_API_KEY}`,
         },
         body: JSON.stringify({
-          model: "scaledown/scaledown-extract-1",
+          model: "tencent/hy4-flash",
           messages: [
             {
               role: "system",
@@ -168,7 +168,7 @@ async function handler(request, response) {
           Authorization: `Bearer ${process.env.AIROUTER_API_KEY}`,
         },
         body: JSON.stringify({
-          model: "scaledown/scaledown-extract-1",
+          model: "tencent/hy4-flash",
           messages: [
             {
               role: "system",
