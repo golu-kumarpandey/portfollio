@@ -112,6 +112,52 @@ async function handler(request, response) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 30000);
   try {
+    // ScaleDown Extract is used for evidence extraction, not free-form chat.
+    // Its structured entity output is converted into context for the conversational model.
+    let extractedFacts = facts;
+    const extractionResponse = await fetch(
+      "https://api.airouter.in/v1/chat/completions",
+      {
+        method: "POST",
+        signal: controller.signal,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.AIROUTER_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: "scaledown/scaledown-extract-1",
+          messages: [
+            {
+              role: "system",
+              content:
+                "Extract only factual evidence relevant to the visitor question. Return concise entities from the supplied portfolio facts. Do not invent facts.",
+            },
+            {
+              role: "user",
+              content: `Visitor question:\n${message}\n\nPortfolio facts:\n${facts}`,
+            },
+          ],
+          max_tokens: 1200,
+        }),
+      },
+    );
+    const extractionData = await extractionResponse.json().catch(() => ({}));
+    const extractionText =
+      extractionData.choices?.[0]?.message?.content?.trim() || "";
+    if (extractionResponse.ok && extractionText) {
+      try {
+        const extracted = JSON.parse(extractionText);
+        const entities = Array.isArray(extracted.entities)
+          ? extracted.entities
+              .map((entity) => entity?.text)
+              .filter((text) => typeof text === "string" && text.trim())
+          : [];
+        if (entities.length) extractedFacts = entities.join("\n");
+      } catch {
+        // Keep the deterministic portfolio facts when extraction is not valid JSON.
+      }
+    }
+
     const providerResponse = await fetch(
       "https://api.airouter.in/v1/chat/completions",
       {
@@ -135,7 +181,7 @@ async function handler(request, response) {
             })),
             {
               role: "user",
-              content: `Portfolio facts:\n${facts}\n\nVisitor question:\n${message}`,
+              content: `Relevant portfolio facts:\n${extractedFacts}\n\nVisitor question:\n${message}`,
             },
           ],
           temperature: 0.1,

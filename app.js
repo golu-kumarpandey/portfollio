@@ -2592,7 +2592,7 @@ const AskGoluMessaging = ({ darkMode }) => {
     <div className="relative">
       {open && (
         <section
-          className={`ask-golu-panel chat-panel-enter absolute bottom-[calc(100%+0.75rem)] right-0 flex h-[min(76dvh,34rem)] max-h-[calc(100dvh-10rem)] w-[calc(100vw-2rem)] max-w-[23rem] flex-col overflow-hidden rounded-2xl border shadow-2xl sm:h-[min(76vh,34rem)] ${darkMode ? "border-gray-700 bg-gray-900 text-white" : "border-gray-200 bg-white text-[#1e2139]"}`}
+          className={`ask-golu-panel ${darkMode ? "ask-golu-panel-dark border-gray-700 bg-gray-900 text-white" : "ask-golu-panel-light border-gray-200 bg-white text-[#1e2139]"} chat-panel-enter absolute bottom-[calc(100%+0.75rem)] right-0 flex h-[min(76dvh,34rem)] max-h-[calc(100dvh-10rem)] w-[calc(100vw-2rem)] max-w-[23rem] flex-col overflow-hidden rounded-2xl border shadow-2xl sm:h-[min(76vh,34rem)]`}
           aria-label="Ask Golu chat panel"
         >
           <header className="flex items-center justify-between border-b border-current/10 px-4 py-3">
@@ -2629,7 +2629,7 @@ const AskGoluMessaging = ({ darkMode }) => {
           <div
             ref={transcriptRef}
             onScroll={handleTranscriptScroll}
-            className="ask-golu-transcript flex-1 space-y-2 overflow-y-auto p-3 sm:p-4"
+            className="ask-golu-transcript flex-1 space-y-1.5 overflow-y-auto px-3 py-2.5 sm:px-3.5 sm:py-3"
           >
             {messages.length === 0 && (
               <div
@@ -2645,7 +2645,7 @@ const AskGoluMessaging = ({ darkMode }) => {
                 className={`ask-golu-message-row flex w-full ${message.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`ask-golu-bubble max-w-[88%] break-words text-left [overflow-wrap:anywhere] whitespace-pre-wrap px-3 py-2 text-sm leading-relaxed sm:max-w-[78%] ${message.role === "user" ? "ask-golu-bubble-user bg-orange-500 text-white" : message.status === "error" ? "ask-golu-bubble-error border border-red-300 bg-red-50 text-red-700" : `ask-golu-bubble-assistant ${darkMode ? "bg-gray-800 text-gray-200" : "bg-white text-gray-700"}`}`}
+                  className={`ask-golu-bubble max-w-[88%] break-words text-left [overflow-wrap:anywhere] whitespace-pre-wrap px-3 py-1.5 text-sm leading-snug sm:max-w-[78%] ${message.role === "user" ? "ask-golu-bubble-user bg-orange-500 text-white" : message.status === "error" ? "ask-golu-bubble-error border border-red-300 bg-red-50 text-red-700" : `ask-golu-bubble-assistant ${darkMode ? "bg-gray-800 text-gray-200" : "bg-white text-gray-700"}`}`}
                 >
                   {message.status === "pending" && (
                     <span
