@@ -2756,20 +2756,12 @@ const AskGoluMessaging = ({ darkMode }) => {
         aria-expanded={open}
         aria-label={open ? "Close Ask Golu" : "Open Ask Golu"}
       >
-        <svg
-          className="h-7 w-7"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+        <img
+          src="assets/ask-golu-avatar.png"
+          alt=""
           aria-hidden="true"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.8"
-            d="M8 9.5A2.5 2.5 0 0110.5 7h3A2.5 2.5 0 0116 9.5v5a2.5 2.5 0 01-2.5 2.5h-3A2.5 2.5 0 018 14.5v-5zM12 7V4m-1.5 0h3M10.5 12h.01M13.5 12h.01M10 15h4"
-          />
-        </svg>
+          className="h-10 w-10 rounded-full object-cover"
+        />
       </button>
     </div>
   );
