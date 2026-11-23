@@ -50,9 +50,9 @@ body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans
   .chat-markdown pre code { background: transparent; padding: 0; }
   .chat-markdown img { max-width: 100%; height: auto; border-radius: 0.5rem; }
   /* Keep the floating actions uniform inside their shared vertical stack. */
-  a[href^="tel:+919939117874"], a[href^="https://wa.me/918809658299?text="] { width: 2.75rem !important; height: 2.75rem !important; }
+  a[href^="https://wa.me/918809658299?text="] { width: 2.75rem !important; height: 2.75rem !important; }
   button[aria-label="Open Ask Golu"], button[aria-label="Close Ask Golu"] { width: 2.75rem !important; height: 2.75rem !important; }
-  button[aria-label="Open Ask Golu"] svg, button[aria-label="Close Ask Golu"] svg, a[href^="tel:+919939117874"] svg, a[href^="https://wa.me/918809658299?text="] svg { width: 1.25rem !important; height: 1.25rem !important; }
+  button[aria-label="Open Ask Golu"] svg, button[aria-label="Close Ask Golu"] svg, a[href^="https://wa.me/918809658299?text="] svg { width: 1.25rem !important; height: 1.25rem !important; }
   .ask-golu-cursor { display: inline-block; width: 0.45rem; height: 1em; margin-left: 0.15rem; vertical-align: -0.12em; border-radius: 9999px; background: currentColor; animation: askGoluCursorBlink 0.9s step-end infinite; }
   @keyframes askGoluCursorBlink { 0%, 45% { opacity: 1; } 46%, 100% { opacity: 0; } }
   @media (prefers-reduced-motion: reduce) { .ask-golu-cursor { animation: none; opacity: 1; } }
