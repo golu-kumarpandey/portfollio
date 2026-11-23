@@ -168,7 +168,7 @@ async function handler(request, response) {
           Authorization: `Bearer ${process.env.AIROUTER_API_KEY}`,
         },
         body: JSON.stringify({
-          model: "alibaba/qwen-3-32b",
+          model: "scaledown/scaledown-extract-1",
           messages: [
             {
               role: "system",
